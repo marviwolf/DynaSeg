@@ -109,3 +109,9 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+#new
+data
+.vscode
+output_eval
+work_dirs

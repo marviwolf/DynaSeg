@@ -8,6 +8,7 @@ from mmcv.runner import HOOKS
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import torchvision.models as models
+import pandas as pd
 
 @HOOKS.register_module()
 class LossWeightStepUpdateHook(Hook):
@@ -82,9 +83,11 @@ class MyCustomArchitectureOptimalClustersResNet18(nn.Module):
         self.T = T
         self.mu = mu
         self.update_factor = update_factor
-        self.optimal_clusters = {}
         self.qdy = qdy
         num_channels = qdy
+
+        #load precomputed optimal cluster estimation
+        self.optimal_clusters = pd.read_csv("data/optimal_clusters_train2017.csv").set_index('image_name')['optimal_clusters'].to_dict()
 
         # Replace the fully connected layer with a convolutional layer
         self.resnet18.fc = nn.Conv2d(512, input_dim, kernel_size=1, stride=1, padding=0, bias=False)
@@ -198,20 +201,17 @@ class MyCustomArchitectureOptimalClustersResNet18(nn.Module):
 
     #
 
-    def train_step(self, data_batch, optimizer, **kwargs):
+    def train_step(self, data_batch, optimizer):
         inputs = data_batch['img']
         image_names = data_batch['idx']
-        optimal_clusters = data_batch['optimal_clusters'][image_names.item()]
-        # Extract the integer value from the tensor
-        optimal_clusters_value = int(optimal_clusters.item())
-        print(f"optimal_clusters for image {int(image_names.item())}: {optimal_clusters_value}")
 
         optimizer.zero_grad()
 
         losses = []
         for image_idx in range(len(inputs)):
             image = inputs[image_idx].unsqueeze(0)
-            image_name = image_names[image_idx]
+            image_name=image_names[image_idx]
+            #print(image.shape)
 
             for _ in range(self.T):
                 logits, labels = self.forward(image)
@@ -221,10 +221,10 @@ class MyCustomArchitectureOptimalClustersResNet18(nn.Module):
                 optimizer.zero_grad()
 
             unique_labels = torch.unique(labels)
-            self.qdy = max(len(unique_labels), optimal_clusters_value)
+            opt_cluster=self.optimal_clusters[int(image_name)]
+            self.qdy = max(len(unique_labels), int(opt_cluster))
 
             losses.append(loss.item())
-            print(f"Loss for image {image_name}: {loss.item()}", f"Number of clusters is =", self.qdy)
 
         average_loss = sum(losses) / len(losses)
         log_vars = {'loss': average_loss}
@@ -261,5 +261,8 @@ class MyCustomArchitectureOptimalClustersResNet18(nn.Module):
 
             # Store the optimal cluster count in the dictionary
             self.optimal_clusters[image_name] = optimal_clusters
+        
+        else:
+            optimal_clusters=self.optimal_clusters[image_name]
 
         return optimal_clusters

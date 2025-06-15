@@ -67,11 +67,11 @@ class ValidateHook(Hook):
                 break
         ####Bijou
         # Create the output directory if it doesn't exist
-        output_dir = '/home/bijouub/PycharmProjects/DynamicSegNet/output_eval'
+        output_dir = 'output_eval'
         os.makedirs(output_dir, exist_ok=True)
 
         with open(
-                '/home/bijouub/PycharmProjects/DynamicSegNet/tools/data/curated/val2017/Coco164kFull_Stuff_Coarse_7.txt',
+                'data/curated/val2017/Coco164kFull_Stuff_Coarse_7.txt',
                 'r') as f:
             name = f.read().strip()
 
@@ -81,14 +81,14 @@ class ValidateHook(Hook):
         if runner.epoch == 0:
 
             # Save eval_results using pickle with the filename
-            with open(os.path.join(output_dir, f'{name}_eval_results.pkl'), 'wb') as f:
+            with open(os.path.join(output_dir, f'epoch{runner.epoch}_eval_results.pkl'), 'wb') as f:
                 pickle.dump(eval_results, f)
         else:
             # Define a placeholder for existing_eval_results
             existing_eval_results = None
 
             # Load the existing pickle with the filename if it exists
-            eval_results_path = os.path.join(output_dir, f'{name}_eval_results.pkl')
+            eval_results_path = os.path.join(output_dir, f'epoch{runner.epoch}_eval_results.pkl')
             if os.path.exists(eval_results_path):
                 with open(eval_results_path, 'rb') as f:
                     existing_eval_results = pickle.load(f)
@@ -103,7 +103,7 @@ class ValidateHook(Hook):
             if (runner.epoch +1) == runner.max_epochs:
                 # Load the best_eval_results eval_results.pkl file if it exists
                 best_eval_results = {}
-                eval_results_path = '/home/bijouub/PycharmProjects/DynamicSegNet/output_eval/eval_results.pkl'
+                eval_results_path = 'output_eval/eval_results.pkl'
 
                 # Check if the file exists and is not empty
                 if os.path.exists(eval_results_path) and os.path.getsize(eval_results_path) > 0:

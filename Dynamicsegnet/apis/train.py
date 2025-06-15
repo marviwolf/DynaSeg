@@ -143,7 +143,7 @@ def train_architecture(model,
             shuffle=False)
         runner.val_dataloader = val_dataloader
 
-    runner.evaluator = build_evaluator(cfg.evaluator)
+        runner.evaluator = build_evaluator(cfg.evaluator)
 
     # user-defined hooks
     if cfg.get('custom_hooks', None):

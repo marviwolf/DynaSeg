@@ -10,6 +10,8 @@ from Dynamicsegnet.datasets.builder import DATASETS, DATASOURCES, PIPELINES
 from Dynamicsegnet.datasets.pipelines import IndexCompose
 from Dynamicsegnet.utils import get_root_logger
 
+import os
+
 try:
     from torchvision.transforms import InterpolationMode
 except ImportError:
@@ -59,6 +61,8 @@ class CustomReplayDataset(BaseDataset):
              f'Please ensure that the list file does not contain labels.')
         img = self.transform_img(idx, img)
         label = self.transform_label(idx)
+        #comment out next line to return to normal function
+        idx=torch.tensor(int(os.path.splitext(os.path.basename(self.data_source.fns[idx]))[0]))
         data = dict(idx=idx, img=img)
         if label[0] is not None:
             data.update(label=label)

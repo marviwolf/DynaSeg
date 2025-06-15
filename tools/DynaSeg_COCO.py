@@ -16,8 +16,8 @@ from mmcv.utils import collect_env, get_git_hash
 
 from Dynamicsegnet.utils.metrics_utils import calculate_metrics_average
 import torch.distributed as dist
-dist.init_process_group('gloo', init_method='file:///tmp/somefile', rank=0, world_size=1)
-
+#dist.init_process_group('gloo', init_method='file:///tmp/somefile', rank=0, world_size=1)
+dist.init_process_group('gloo', init_method='file:///C:/temp/somefile', rank=0, world_size=1)
 
 '''clearing the occupied cuda memory and we can also manually clear the not in use variables by using,
 '''
@@ -166,33 +166,9 @@ def main():
         distributed=distributed,
         validate=(not args.no_validate),
         timestamp=timestamp,
-        meta=meta)
+        meta=meta) 
 
-
-def process_image(image_path):
-    # Print the image name
-    image_name = os.path.basename(image_path)
-    print(f"Processing image: {image_name}")
-
-
-    # Create a new file with one image
-    with open('DynaSeg/tools/data/curated/val2017/Coco164kFull_Stuff_Coarse_7.txt', 'w') as f:
-        f.write(image_path)
-
-    # Call your main function
+if __name__ == '__main__':
+    import multiprocessing
+    multiprocessing.freeze_support()  # important on Windows
     main()
-
-# Read the list file
-with open('DynaSeg/tools/data/curated/val2017/Coco164kFull_Stuff_Coarse_7_Original.txt', 'r') as f:
-    images = f.readlines()
-
-# Process each image
-for image in images:
-    print("Processing image", image)
-    image_path = image.strip()
-    process_image(image_path)
-
-# After processing all images, calculate the average metrics
-eval_results_path = 'DynaSeg/output_eval/eval_results.pkl'
-average_metrics = calculate_metrics_average(eval_results_path)
-print("Average Metrics:", average_metrics)
