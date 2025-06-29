@@ -111,7 +111,8 @@ venv.bak/
 dmypy.json
 
 #new
-data
+val2017
+train2017
 .vscode
 output_eval
 work_dirs

@@ -17,7 +17,7 @@ from mmcv.utils import collect_env, get_git_hash
 from Dynamicsegnet.utils.metrics_utils import calculate_metrics_average
 import torch.distributed as dist
 #dist.init_process_group('gloo', init_method='file:///tmp/somefile', rank=0, world_size=1)
-dist.init_process_group('gloo', init_method='file:///C:/temp/somefile', rank=0, world_size=1)
+dist.init_process_group('gloo', init_method='file:///tmp/somefile', rank=0, world_size=1)
 
 '''clearing the occupied cuda memory and we can also manually clear the not in use variables by using,
 '''

@@ -1,5 +1,60 @@
 # DynaSeg: A deep dynamic fusion method for unsupervised image segmentation incorporating feature similarity and spatial continuity
 
+## 🛠️ Setup Instructions (Windows/WSL Compatible)
+
+Follow these steps to install dependencies and prepare the dataset for training and evaluation.
+
+### 1. Create a Virtual Environment using Python 3.11
+```bash
+python3.11 -m venv .venv
+```
+
+### 2. Install Required Packages
+```bash
+pip install openmim mmdet mmsegmentation mmselfsup
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+mim install mmcv-full
+```
+
+### 3. Prepare Temporary Folder
+If using Windows or WSL:
+- Create a folder for inter-process communication:
+```bash
+mkdir C:/tmp
+```
+
+### 4. Download and Place Dataset
+Place all dataset files under the `data/` directory as follows:
+
+- **Images**:
+  - Download [train2017.zip](http://images.cocodataset.org/zips/train2017.zip)
+  - Download [val2017.zip](http://images.cocodataset.org/zips/val2017.zip)
+  - Unzip and place the folders into:
+    ```
+    data/train2017/
+    data/val2017/
+    ```
+
+- **Annotations**:
+  - Download [stuffthingmaps_trainval2017.zip](http://calvin.inf.ed.ac.uk/wp-content/uploads/data/cocostuffdataset/stuffthingmaps_trainval2017.zip)
+  - Unzip and place the folders into:
+    ```
+    data/annotations/train2017/
+    data/annotations/val2017/
+    ```
+
+### 5. Run Training & Evaluation
+Use the following command to start one round of evaluation, followed by training:
+```bash
+python -m tools.DynaSeg_COCO --config configs/DynamicSCF/custom_model_config_Resnet_FPN.py
+```
+
+This will automatically handle evaluation and training in a loop.\
+Changes made to the original code can be found in commit #05ba22b375fd80554d3c9b41a916a0926e657fcb. 
+
+---
+The original authors README starts here:
+
 **Authors:** [Boujemaa Guermazi](mailto:bguermazi@torontomu.ca), [Riadh Ksantini](mailto:rksantini@uob.edu.bh), [Naimul Khan](mailto:n77khan@torontomu.ca )
 
 
